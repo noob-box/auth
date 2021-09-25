@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import supertokens from 'supertokens-node';
-import { SupertokensExceptionFilter } from './auth/auth.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as helmet from 'helmet';
 
@@ -24,8 +23,6 @@ async function bootstrap() {
     customSiteTitle: 'noob-box Auth API Reference',
     customCss: '.topbar { display: none; }',
   });
-
-  app.useGlobalFilters(new SupertokensExceptionFilter());
 
   await app.listen(3000);
 }

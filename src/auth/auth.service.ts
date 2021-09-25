@@ -11,12 +11,12 @@ export class AuthService {
   constructor(private userService: UserService) {
     supertokens.init({
       supertokens: {
-        connectionURI: 'http://localhost:3567',
+        connectionURI: process.env.SUPERTOKENS_CORE || 'http://localhost:3567',
       },
       appInfo: {
         appName: 'noob-box Auth',
-        apiDomain: 'http://localhost:3000',
-        websiteDomain: 'http://localhost:3001',
+        apiDomain: process.env.SUPERTOKENS_API_DOMAIN || 'http://localhost:3000',
+        websiteDomain: process.env.SUPERTOKENS_WEBSITE_DOMAIN || 'http://localhost:3001',
       },
       recipeList: [
         EmailPassword.init({
@@ -44,7 +44,7 @@ export class AuthService {
                 createNewSession: async (input) => {
                   const userId = input.userId;
 
-                  const user = await userService.user({
+                  const user = await this.userService.user({
                     id: userId,
                   });
 
