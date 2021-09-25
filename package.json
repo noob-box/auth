@@ -5,7 +5,12 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "bin": {
+    "nbox": "dist/cli.js"
+  },
   "scripts": {
+    "start:cli": "$npm_package_bin_nbox",
+    "start:dev:cli": "ts-node src/cli.ts",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -39,6 +44,7 @@
     "@nestjs/platform-express": "^8.0.6",
     "@nestjs/swagger": "^5.0.9",
     "@prisma/client": "^3.1.1",
+    "commander": "^8.2.0",
     "helmet": "^4.6.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
