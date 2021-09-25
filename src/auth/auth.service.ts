@@ -2,7 +2,7 @@ import supertokens from 'supertokens-node';
 import EmailPassword from 'supertokens-node/recipe/emailpassword';
 import Session from 'supertokens-node/recipe/session';
 import { Injectable, Logger } from '@nestjs/common';
-import { UserService } from 'src/user/user.service';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService {

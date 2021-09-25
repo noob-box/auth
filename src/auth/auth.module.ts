@@ -1,11 +1,11 @@
 import { DynamicModule, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { UserService } from 'src/user/user.service';
+import { DatabaseService } from '../database/database.service';
+import { UserService } from '../user/user.service';
 import { AuthMiddleware } from './auth.middleware';
 import { AuthService } from './auth.service';
 
 @Module({
-  providers: [AuthService, UserService, PrismaService],
+  providers: [AuthService, UserService, DatabaseService],
   exports: [],
   controllers: [],
 })
