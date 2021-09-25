@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PrismaService } from './prisma/prisma.service';
+import { DatabaseService } from './database/database.service';
 import { UserService } from './user/user.service';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './auth/roles.guard';
@@ -13,7 +13,7 @@ import { AuthModule } from './auth/auth.module';
   controllers: [AppController],
   providers: [
     AppService,
-    PrismaService,
+    DatabaseService,
     UserService,
     {
       provide: APP_GUARD,
