@@ -2,13 +2,13 @@ import supertokens from 'supertokens-node';
 import EmailPassword from 'supertokens-node/recipe/emailpassword';
 import Session from 'supertokens-node/recipe/session';
 import { Injectable, Logger } from '@nestjs/common';
-import { UserService } from '../user/user.service';
+import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
 
-  constructor(private userService: UserService) {
+  constructor(private databaseService: DatabaseService) {
     supertokens.init({
       supertokens: {
         connectionURI: process.env.SUPERTOKENS_CORE || 'http://localhost:3567',
@@ -20,13 +20,6 @@ export class AuthService {
       },
       recipeList: [
         EmailPassword.init({
-          signUpFeature: {
-            formFields: [
-              {
-                id: 'displayName',
-              },
-            ],
-          },
           override: {
             apis: (originalImplementation) => {
               return {
@@ -44,13 +37,14 @@ export class AuthService {
                 createNewSession: async (input) => {
                   const userId = input.userId;
 
-                  const user = await this.userService.user({
+                  const user = await this.databaseService.user({
                     id: userId,
                   });
 
                   input.jwtPayload = {
                     ...input.jwtPayload,
                     role: user.role,
+                    displayName: user.displayName,
                   };
 
                   return originalImplementation.createNewSession(input);
