@@ -10,9 +10,12 @@ export class AppController {
 
   @Get('sessioninfo')
   async getSessionInfo(@Session() session: SessionContainer): Promise<string> {
-    const test = await session.getTimeCreated();
+    const output = {
+      payload: session.getJWTPayload(),
+      userId: session.getUserId(),
+    };
 
-    return JSON.stringify(test);
+    return JSON.stringify(output);
   }
 
   @Get('admin')

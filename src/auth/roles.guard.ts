@@ -3,11 +3,11 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 import { Reflector } from '@nestjs/core';
 import { SessionContainer } from 'supertokens-node/recipe/session';
 import { ROLES_KEY } from './roles.decorator';
-import { UserService } from '../user/user.service';
+import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(private reflector: Reflector, private userService: UserService) {}
+  constructor(private reflector: Reflector, private databaseService: DatabaseService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
@@ -18,7 +18,7 @@ export class RolesGuard implements CanActivate {
     const session: SessionContainer = context.switchToHttp().getRequest().session;
 
     const userId = session.getUserId();
-    const user = await this.userService.user({ id: userId });
+    const user = await this.databaseService.user({ id: userId });
     const role = user?.role;
 
     if (!requiredRoles || (role && requiredRoles.includes(role))) {
