@@ -8,6 +8,7 @@ import { RolesGuard } from './auth/roles.guard';
 import { AuthGuard } from './auth/auth.guard';
 import { AuthModule } from './auth/auth.module';
 import { SupertokensExceptionFilter } from './auth/auth.filter';
+import { AdminService } from './admin/admin.service';
 
 @Module({
   imports: [AuthModule],
@@ -28,6 +29,7 @@ import { SupertokensExceptionFilter } from './auth/auth.filter';
       provide: APP_GUARD,
       useClass: RolesGuard,
     },
+    AdminService,
   ],
 })
 export class AppModule {}

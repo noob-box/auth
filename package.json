@@ -9,7 +9,7 @@
     "nbox": "dist/cli.js"
   },
   "scripts": {
-    "start:cli": "$npm_package_bin_nbox",
+    "start:prod:cli": "$npm_package_bin_nbox",
     "start:dev:cli": "ts-node src/cli.ts",
     "prebuild": "rimraf dist",
     "build": "nest build",
