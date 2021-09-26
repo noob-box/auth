@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '../prisma/prisma.service';
-import { DatabaseService } from './database.service';
 
 describe('DatabaseService', () => {
   let service: PrismaService;
