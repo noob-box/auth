@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { PrismaService } from './prisma/prisma.service';
 import { DatabaseService } from './database/database.service';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
@@ -9,14 +8,16 @@ import { AuthGuard } from './auth/auth.guard';
 import { AuthModule } from './auth/auth.module';
 import { SupertokensExceptionFilter } from './auth/auth.filter';
 import { UserService } from './user/user.service';
+import { AdminController } from './admin/admin.controller';
+import { MeController } from './me/me.controller';
 
 @Module({
   imports: [AuthModule],
-  controllers: [AppController],
+  controllers: [AppController, AdminController, MeController],
   providers: [
-    AppService,
     DatabaseService,
     PrismaService,
+    UserService,
     {
       provide: APP_FILTER,
       useClass: SupertokensExceptionFilter,
@@ -29,7 +30,6 @@ import { UserService } from './user/user.service';
       provide: APP_GUARD,
       useClass: RolesGuard,
     },
-    UserService,
   ],
 })
 export class AppModule {}

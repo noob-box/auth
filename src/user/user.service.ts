@@ -1,17 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import supertokens from 'supertokens-node';
-import Emailpassword, { User } from 'supertokens-node/recipe/emailpassword';
+import EmailPassword, { User } from 'supertokens-node/recipe/emailpassword';
 
-type NBoxUser = {
+export type NBoxUser = {
   displayName: string;
 } & User;
 
 @Injectable()
 export class UserService {
   constructor(private databaseService: DatabaseService) {}
-  async createUser(username: string, password: string, displayName: string) {
-    const res = await Emailpassword.signUp(username, password);
+
+  async createUser(email: string, password: string, displayName: string) {
+    const res = await EmailPassword.signUp(email, password);
 
     if (res.status === 'OK' && res.user) {
       await this.databaseService.createUser({
@@ -22,7 +23,7 @@ export class UserService {
       return this.getUserByEmailOrId(res.user.id);
     }
 
-    return res.status;
+    throw new Error(res.status);
   }
 
   async getUsers(): Promise<NBoxUser[]> {
@@ -44,8 +45,8 @@ export class UserService {
     const isEmail = emailOrId.includes('@');
 
     const stUser = isEmail
-      ? await Emailpassword.getUserByEmail(emailOrId)
-      : await Emailpassword.getUserById(emailOrId);
+      ? await EmailPassword.getUserByEmail(emailOrId)
+      : await EmailPassword.getUserById(emailOrId);
 
     if (stUser) {
       const dbUser = await this.databaseService.user({
@@ -55,5 +56,12 @@ export class UserService {
     } else {
       return;
     }
+  }
+
+  async createUserPasswordResetUrl(userId: string) {
+    const res = await EmailPassword.createResetPasswordToken(userId);
+    const baseUrl = process.env.SUPERTOKENS_WEBSITE_DOMAIN || 'http://localhost:3001';
+
+    if (res.status === 'OK') return `${baseUrl}/auth/reset-password?token=${res.token}`;
   }
 }

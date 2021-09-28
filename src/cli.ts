@@ -5,6 +5,10 @@ import { Command } from 'commander';
 import { UserService } from './user/user.service';
 import { AppModule } from './app.module';
 
+function prettyJsonPrint(text: any) {
+  console.log(JSON.stringify(text, null, 2));
+}
+
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule, {
     logger: false,
@@ -19,7 +23,7 @@ async function bootstrap() {
     .command('list')
     .description('Lists all users')
     .action(async () => {
-      console.log(JSON.stringify(await userService.getUsers()));
+      prettyJsonPrint(await userService.getUsers());
     });
 
   userCommand
@@ -29,7 +33,7 @@ async function bootstrap() {
     .argument('<password>')
     .argument('<displayName>')
     .action(async (username: string, password: string, displayName: string) => {
-      console.log(JSON.stringify(await userService.createUser(username, password, displayName)));
+      prettyJsonPrint(await userService.createUser(username, password, displayName));
     });
 
   userCommand
@@ -37,7 +41,7 @@ async function bootstrap() {
     .description('Get a specific user by email or id')
     .argument('<emailOrId>')
     .action(async (emailOrId: string) => {
-      console.log(JSON.stringify(await userService.getUserByEmailOrId(emailOrId)));
+      prettyJsonPrint(await userService.getUserByEmailOrId(emailOrId));
     });
 
   await program.parseAsync(process.argv);

@@ -1,7 +1,7 @@
 import supertokens from 'supertokens-node';
 import EmailPassword from 'supertokens-node/recipe/emailpassword';
 import Session from 'supertokens-node/recipe/session';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 
 @Injectable()
@@ -50,6 +50,11 @@ export class AuthService {
                   return originalImplementation.createNewSession(input);
                 },
               };
+            },
+          },
+          errorHandlers: {
+            onUnauthorised: (message, request, response) => {
+              throw new UnauthorizedException(undefined, message);
             },
           },
         }),
