@@ -53,7 +53,7 @@ export class AuthService {
             },
           },
           errorHandlers: {
-            onUnauthorised: (message, request, response) => {
+            onUnauthorised: (message) => {
               throw new UnauthorizedException(undefined, message);
             },
           },
