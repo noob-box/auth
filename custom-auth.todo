@@ -1,0 +1,18 @@
+Configuration:
+  ☐ Load configuration from env variables and env file
+  ☐ Validate configuration
+  ☐ Use config service for access
+  
+  Config Options:
+    ☐ Database URL
+    ☐ JWT Secret
+    
+Authorization:
+  ☐ Add role guard
+  ☐ Secure admin routes by role guard
+
+Tests:
+  ☐ Rewrite and fix tests
+
+CLI:
+  ☐ Use @nestjs/commander package
