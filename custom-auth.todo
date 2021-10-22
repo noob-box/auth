@@ -6,6 +6,9 @@ Configuration:
   Config Options:
     ☐ Database URL
     ☐ JWT Secret
+
+Authentication:
+  ☐ Add password hashing (e.g. npm: secure-password)
     
 Authorization:
   ☐ Add role guard
