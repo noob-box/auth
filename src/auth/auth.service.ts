@@ -1,64 +1,28 @@
-import supertokens from 'supertokens-node';
-import EmailPassword from 'supertokens-node/recipe/emailpassword';
-import Session from 'supertokens-node/recipe/session';
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
-import { DatabaseService } from '../database/database.service';
+import { Injectable } from '@nestjs/common';
+import { UsersService } from '../users/users.service';
+import { JwtService } from '@nestjs/jwt';
+import { UserDto } from '../users/models/user.dto';
 
 @Injectable()
 export class AuthService {
-  private readonly logger = new Logger(AuthService.name);
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  constructor(private databaseService: DatabaseService) {
-    supertokens.init({
-      supertokens: {
-        connectionURI: process.env.SUPERTOKENS_CORE || 'http://localhost:3567',
-      },
-      appInfo: {
-        appName: 'noob-box Auth',
-        apiDomain: process.env.SUPERTOKENS_API_DOMAIN || 'http://localhost:3000',
-        websiteDomain: process.env.SUPERTOKENS_WEBSITE_DOMAIN || 'http://localhost:3001',
-      },
-      recipeList: [
-        EmailPassword.init({
-          override: {
-            apis: (originalImplementation) => {
-              return {
-                ...originalImplementation,
-                signUpPOST: undefined,
-              };
-            },
-          },
-        }),
-        Session.init({
-          override: {
-            functions: (originalImplementation) => {
-              return {
-                ...originalImplementation,
-                createNewSession: async (input) => {
-                  const userId = input.userId;
+  async validateUser(email: string, password: string): Promise<any> {
+    const user = await this.usersService.findOneByEmailAndValidate(email, password);
+    return user;
+  }
 
-                  const user = await this.databaseService.user({
-                    id: userId,
-                  });
-
-                  input.jwtPayload = {
-                    ...input.jwtPayload,
-                    role: user.role,
-                    displayName: user.displayName,
-                  };
-
-                  return originalImplementation.createNewSession(input);
-                },
-              };
-            },
-          },
-          errorHandlers: {
-            onUnauthorised: (message, request, response) => {
-              throw new UnauthorizedException(undefined, message);
-            },
-          },
-        }),
-      ],
-    });
+  async login(user: UserDto) {
+    const { id, ...additionalProps } = user;
+    const payload = {
+      sub: id,
+      ...additionalProps,
+    };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 }

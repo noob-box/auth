@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import supertokens from 'supertokens-node';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as helmet from 'helmet';
 
@@ -9,7 +8,6 @@ async function bootstrap() {
   app.use(helmet());
   app.enableCors({
     origin: ['http://localhost:3001'],
-    allowedHeaders: ['content-type', ...supertokens.getAllCORSHeaders()],
     credentials: true,
   });
 

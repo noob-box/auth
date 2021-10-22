@@ -1,39 +1,36 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { Role } from '@prisma/client';
-import { NBoxUser, UserService } from '../user/user.service';
-import { Roles } from '../auth/roles.decorator';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { v4 as uuidv4 } from 'uuid';
-import UserPasswordResetUrlDto from './models/UserPasswordResetUrl.dto';
+import { UsersService } from '../users/users.service';
+import { UserDto } from '../users/models/user.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('admin')
-@Roles(Role.ADMIN)
+@UseGuards(AuthGuard('local'))
 @ApiTags('Administration')
 export class AdminController {
-  constructor(private userService: UserService) {}
+  constructor(private readonly userService: UsersService) {}
 
   @Get('users')
-  async getUsers(): Promise<NBoxUser[]> {
-    return this.userService.getUsers();
+  async getUsers(): Promise<UserDto[]> {
+    return this.userService.findAll();
   }
 
   @Get('user')
-  async getUser(@Param('emailOrId') emailOrId: string): Promise<NBoxUser> {
-    return this.userService.getUserByEmailOrId(emailOrId);
+  async getUserByEmail(@Param('email') email: string): Promise<UserDto> {
+    return this.userService.findOneByEmail(email);
+  }
+
+  @Get('user')
+  async getUserById(@Param('id') id: string): Promise<UserDto> {
+    return this.userService.findOneById(id);
   }
 
   @Post('user')
   async postUser(
     @Body('email') email: string,
     @Body('displayName') displayName: string,
-  ): Promise<NBoxUser> {
-    return this.userService.createUser(email, uuidv4(), displayName);
-  }
-
-  @Post('user/password-reset-url')
-  async postUserPasswordResetUrl(@Body('userId') userId: string): Promise<UserPasswordResetUrlDto> {
-    return {
-      url: await this.userService.createUserPasswordResetUrl(userId),
-    };
+  ): Promise<UserDto> {
+    return this.userService.create(email, uuidv4(), displayName);
   }
 }

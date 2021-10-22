@@ -1,25 +1,23 @@
-import { DynamicModule, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { DatabaseService } from '../database/database.service';
-import { AuthMiddleware } from './auth.middleware';
+import { Module } from '@nestjs/common';
+import { PassportModule } from '@nestjs/passport';
+import { UsersModule } from '../users/users.module';
 import { AuthService } from './auth.service';
+import { LocalStrategy } from './local.strategy';
+import { AuthController } from './auth.controller';
+import { JwtModule } from '@nestjs/jwt';
+import { jwtConstants } from './constants';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
-  providers: [AuthService, DatabaseService, PrismaService],
-  exports: [],
-  controllers: [],
+  imports: [
+    UsersModule,
+    PassportModule,
+    JwtModule.register({
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '30d' },
+    }),
+  ],
+  providers: [AuthService, LocalStrategy, JwtStrategy],
+  controllers: [AuthController],
 })
-export class AuthModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).forRoutes('*');
-  }
-
-  static forRoot(): DynamicModule {
-    return {
-      providers: [],
-      exports: [],
-      imports: [],
-      module: AuthModule,
-    };
-  }
-}
+export class AuthModule {}
