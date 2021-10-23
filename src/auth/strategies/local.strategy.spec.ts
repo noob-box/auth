@@ -1,5 +1,5 @@
 import { LocalStrategy } from './local.strategy';
-import { AuthServiceMock } from '../../test/mocks/auth/auth.service.mock';
+import { AuthServiceMock } from '../../../test/mocks/auth/auth.service.mock';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 
 const testUserResult = {
