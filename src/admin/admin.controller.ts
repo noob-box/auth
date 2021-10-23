@@ -1,12 +1,15 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { v4 as uuidv4 } from 'uuid';
 import { UsersService } from '../users/users.service';
 import { UserDto } from '../users/models/user.dto';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '@prisma/client';
+import { RolesGuard } from '../auth/guards/role.guard';
 
 @Controller('admin')
-@UseGuards(AuthGuard('local'))
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(Role.ADMIN)
 @ApiTags('Administration')
 export class AdminController {
   constructor(private readonly userService: UsersService) {}
@@ -17,20 +20,15 @@ export class AdminController {
   }
 
   @Get('user')
-  async getUserByEmail(@Param('email') email: string): Promise<UserDto> {
+  async getUser(@Query('email') email): Promise<UserDto> {
     return this.userService.findOneByEmail(email);
   }
 
-  @Get('user')
-  async getUserById(@Param('id') id: string): Promise<UserDto> {
-    return this.userService.findOneById(id);
-  }
-
-  @Post('user')
-  async postUser(
-    @Body('email') email: string,
-    @Body('displayName') displayName: string,
-  ): Promise<UserDto> {
-    return this.userService.create(email, uuidv4(), displayName);
-  }
+  // @Post('user')
+  // async postUser(
+  //   @Body('email') email: string,
+  //   @Body('displayName') displayName: string,
+  // ): Promise<UserDto> {
+  //   return this.userService.create(email, uuidv4(), displayName);
+  // }
 }

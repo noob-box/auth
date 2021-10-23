@@ -4,9 +4,12 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as helmet from 'helmet';
 import { ConfigService } from '@nestjs/config';
 import { Configuration, Environment } from './config/configuration';
+import { ISOLogger } from './logger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: new ISOLogger(),
+  });
   const config = app.get<ConfigService<Configuration>>(ConfigService);
 
   app.use(helmet());

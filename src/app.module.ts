@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { MeController } from './me/me.controller';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { AdminModule } from './admin/admin.module';
@@ -17,6 +16,6 @@ import { getValidatedConfiguration } from './config/configuration';
     UsersModule,
     AdminModule,
   ],
-  controllers: [AppController, MeController],
+  controllers: [AppController],
 })
 export class AppModule {}

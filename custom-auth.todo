@@ -6,10 +6,6 @@ Validation:
 
 Authentication:
   ☐ Add password hashing (e.g. npm: secure-password)
-    
-Authorization:
-  ☐ Add role guard
-  ☐ Secure admin routes by role guard
 
 Tests:
   ☐ Rewrite e2e tests
@@ -18,7 +14,7 @@ CLI:
   ☐ Use @nestjs/commander package
 
 Controllers:
-  ☐ 
+  ☐ Add health check controller
 
 Archive:
   Configuration:
@@ -32,3 +28,7 @@ Archive:
 
   Tests:
     ✔ Rewrite and fix tests @done(21-10-23 16:03)
+
+  Authorization:
+    ✔ Add role guard @done(21-10-23 17:35)
+    ✔ Secure admin routes by role guard @done(21-10-23 17:35)
