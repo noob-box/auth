@@ -1,11 +1,5 @@
 Configuration:
-  ☐ Load configuration from env variables and env file
-  ☐ Validate configuration
-  ☐ Use config service for access
-  
-  Config Options:
-    ☐ Database URL
-    ☐ JWT Secret
+  ☐ Add CORS configuration options
 
 Validation:
   ☐ Validate all requests and responses
@@ -18,7 +12,23 @@ Authorization:
   ☐ Secure admin routes by role guard
 
 Tests:
-  ☐ Rewrite and fix tests
+  ☐ Rewrite e2e tests
 
 CLI:
   ☐ Use @nestjs/commander package
+
+Controllers:
+  ☐ 
+
+Archive:
+  Configuration:
+    ✔ Load configuration from env variables and env file @started(21-10-23 11:33) @done(21-10-23 16:02) @lasted(4h29m22s)
+    ✔ Validate configuration @done(21-10-23 16:02)
+    ✔ Use config service for access @done(21-10-23 16:02)
+    
+    Config Options:
+      ✔ Database URL @done(21-10-23 16:02)
+      ✔ JWT Secret @done(21-10-23 16:02)
+
+  Tests:
+    ✔ Rewrite and fix tests @done(21-10-23 16:03)

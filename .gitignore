@@ -8,3 +8,5 @@ dist
 !.env.test
 
 .DS_Store
+
+coverage

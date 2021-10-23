@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
 import { AdminController } from './admin.controller';
+
+jest.mock('../users/users.service');
 
 describe('AdminController', () => {
   let controller: AdminController;
@@ -9,7 +10,7 @@ describe('AdminController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AdminController],
-      providers: [UsersService, PrismaService],
+      providers: [UsersService],
     }).compile();
 
     controller = module.get<AdminController>(AdminController);
