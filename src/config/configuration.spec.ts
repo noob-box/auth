@@ -1,8 +1,12 @@
 // reflect-metadata needs to be in global scobe for class-transformer to work.
 // Nest provides it at runtime
 import 'reflect-metadata';
-import { ValidationError } from 'class-validator';
-import { Configuration, Environment, getValidatedConfiguration } from './configuration';
+import {
+  Configuration,
+  ConfigValidationError,
+  Environment,
+  getValidatedConfiguration,
+} from './configuration';
 
 describe('Configuration', () => {
   describe('getValidatedConfiguration', () => {
@@ -49,13 +53,13 @@ describe('Configuration', () => {
         JWT_EXPIRY: 'invalidData',
       };
 
-      expect(() => getValidatedConfiguration(validEnvInput)).toThrow(ValidationError);
+      expect(() => getValidatedConfiguration(validEnvInput)).toThrow(ConfigValidationError);
     });
 
     it('should throw a validation error on missing input', async () => {
       const validEnvInput = {};
 
-      expect(() => getValidatedConfiguration(validEnvInput)).toThrow(ValidationError);
+      expect(() => getValidatedConfiguration(validEnvInput)).toThrow(ConfigValidationError);
     });
   });
 });

@@ -1,8 +1,6 @@
-Configuration:
-  ☐ Add CORS configuration options
-
 Validation:
   ☐ Validate all requests and responses
+  ☐ Create DTOs for every request/response
 
 Authentication:
   ☐ Add password hashing (e.g. npm: secure-password)
@@ -32,3 +30,7 @@ Archive:
   Authorization:
     ✔ Add role guard @done(21-10-23 17:35)
     ✔ Secure admin routes by role guard @done(21-10-23 17:35)
+
+  Configuration:
+    ✔ Add CORS configuration options @started(21-10-24 09:37) @done(21-10-24 11:04) @lasted(1h27m42s)
+    

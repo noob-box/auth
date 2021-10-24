@@ -1,5 +1,18 @@
 import { plainToClass } from 'class-transformer';
-import { IsEnum, IsInt, IsUrl, Matches, Max, Min, MinLength, validateSync } from 'class-validator';
+import {
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsUrl,
+  Matches,
+  Max,
+  Min,
+  MinLength,
+  Validate,
+  validateSync,
+  ValidationError,
+} from 'class-validator';
+import { CorsValidator } from '../utils/validators/cors.validator';
 
 enum Environment {
   Development = 'development',
@@ -18,6 +31,10 @@ class Configuration {
   @Max(65535)
   SERVER_PORT = 3000;
 
+  @IsNotEmpty()
+  @Validate(CorsValidator)
+  CORS = '*';
+
   @MinLength(32)
   JWT_SECRET: string;
 
@@ -34,9 +51,20 @@ const getValidatedConfiguration = (config: Record<string, unknown>) => {
     stopAtFirstError: true,
   });
 
-  if (errors.length > 0) throw errors[0];
+  if (errors.length > 0) throw new ConfigValidationError(errors);
 
   return validatedConfig;
 };
 
-export { getValidatedConfiguration, Configuration, Environment };
+class ConfigValidationError extends Error {
+  public readonly validationErrors: ValidationError[];
+
+  constructor(validationErrors: ValidationError[]) {
+    super();
+
+    this.validationErrors = validationErrors;
+    this.message = validationErrors.toString();
+  }
+}
+
+export { getValidatedConfiguration, Configuration, Environment, ConfigValidationError };
