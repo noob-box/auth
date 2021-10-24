@@ -11,9 +11,6 @@ Tests:
 CLI:
   ☐ Use @nestjs/commander package
 
-Controllers:
-  ☐ Add health check controller
-
 Archive:
   Configuration:
     ✔ Load configuration from env variables and env file @started(21-10-23 11:33) @done(21-10-23 16:02) @lasted(4h29m22s)
@@ -33,4 +30,7 @@ Archive:
 
   Configuration:
     ✔ Add CORS configuration options @started(21-10-24 09:37) @done(21-10-24 11:04) @lasted(1h27m42s)
-    
+
+  Controllers:
+    ✔ Add health check controller @started(21-10-24 11:09) @done(21-10-24 11:47) @lasted(38m39s)
+  

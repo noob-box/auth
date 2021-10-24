@@ -5,6 +5,7 @@ import { UsersModule } from './users/users.module';
 import { AdminModule } from './admin/admin.module';
 import { ConfigModule } from '@nestjs/config';
 import { getValidatedConfiguration } from './config/configuration';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { getValidatedConfiguration } from './config/configuration';
     AuthModule,
     UsersModule,
     AdminModule,
+    HealthModule,
   ],
   controllers: [AppController],
 })
