@@ -17,6 +17,7 @@ import { CorsValidator } from '../utils/validators/cors.validator';
 enum Environment {
   Development = 'development',
   Production = 'production',
+  Test = 'test',
 }
 
 class Configuration {
@@ -46,6 +47,7 @@ const getValidatedConfiguration = (config: Record<string, unknown>) => {
   const validatedConfig = plainToClass(Configuration, config, {
     enableImplicitConversion: true,
   });
+
   const errors = validateSync(validatedConfig, {
     skipMissingProperties: false,
     stopAtFirstError: true,

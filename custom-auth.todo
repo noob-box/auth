@@ -6,7 +6,8 @@ Authentication:
   ☐ Add password hashing (e.g. npm: secure-password)
 
 Tests:
-  ☐ Rewrite e2e tests
+  ☐ Rewrite e2e tests @started(21-10-25 17:20)
+  ☐ DB setup, seeding and teardown for E2E tests 
 
 CLI:
   ☐ Use @nestjs/commander package
