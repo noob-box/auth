@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { Configuration, Environment } from './config/configuration';
 import { ISOLogger } from './utils/logger';
 import { setupSwagger } from './utils/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -21,6 +22,8 @@ async function bootstrap() {
   if (config.get('NODE_ENV') === Environment.Development) {
     setupSwagger(app);
   }
+
+  app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(config.get('SERVER_PORT'));
 }
