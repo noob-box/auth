@@ -6,7 +6,7 @@ import { AppModule } from './app.module';
 import { UsersService } from './users/users.service';
 
 function prettyJsonPrint(text: any) {
-  console.log(JSON.stringify(text, null, 2));
+  console.log(JSON.stringify(text, undefined, 2));
 }
 
 async function bootstrap() {

@@ -1,8 +1,11 @@
+// eslint-disable-next-line unicorn/prevent-abbreviations
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus, INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
+import request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { jwtRegex } from './utils/regex';
+import { UsersService } from '../src/users/users.service';
+import { Role } from '@prisma/client';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -14,6 +17,10 @@ describe('AppController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+
+    const userService = app.get(UsersService);
+    await userService.create('test@example.com', 'UserPassword123', 'Test User', Role.USER);
+    await userService.create('admin@example.com', 'AdminPassword123', 'Test Admin', Role.ADMIN);
   });
 
   describe('API', () => {
@@ -34,11 +41,11 @@ describe('AppController (e2e)', () => {
         });
 
         it('(POST) should return OK given valid login body', async () => {
-          const res = await request(app.getHttpServer())
+          const response = await request(app.getHttpServer())
             .post(authLoginPath)
             .send({ email: 'test@example.com', password: 'SecretPassword123' })
             .expect(HttpStatus.CREATED);
-          expect(res.body.access_token).toMatch(jwtRegex);
+          expect(response.body.access_token).toMatch(jwtRegex);
         });
       });
 

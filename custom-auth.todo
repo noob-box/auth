@@ -3,10 +3,9 @@ Validation:
   ☐ Create DTOs for every request/response
 
 Authentication:
-  ☐ Add password hashing (e.g. npm: secure-password)
+  ✔ Add password hashing (e.g. npm: secure-password) @done(21-10-26 21:33)
 
 Tests:
-  ☐ Rewrite e2e tests @started(21-10-25 17:20)
   ☐ DB setup, seeding and teardown for E2E tests 
 
 CLI:
@@ -24,6 +23,7 @@ Archive:
 
   Tests:
     ✔ Rewrite and fix tests @done(21-10-23 16:03)
+    ✔ Rewrite e2e tests @started(21-10-25 17:20) @done(21-10-26 21:33) @lasted(1d4h13m31s)
 
   Authorization:
     ✔ Add role guard @done(21-10-23 17:35)
@@ -35,3 +35,5 @@ Archive:
   Controllers:
     ✔ Add health check controller @started(21-10-24 11:09) @done(21-10-24 11:47) @lasted(38m39s)
   
+  Authentication:
+    ✔ Add password hashing (e.g. npm: secure-password) @done(21-10-26 21:33)

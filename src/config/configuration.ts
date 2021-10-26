@@ -29,7 +29,7 @@ class Configuration {
 
   @IsInt()
   @Min(1)
-  @Max(65535)
+  @Max(65_535)
   SERVER_PORT = 3000;
 
   @IsNotEmpty()
@@ -39,6 +39,7 @@ class Configuration {
   @MinLength(32)
   JWT_SECRET: string;
 
+  // eslint-disable-next-line unicorn/better-regex
   @Matches(/^\d+(s|m|h|d|w|y)$/)
   JWT_EXPIRY = '7d';
 }
@@ -65,7 +66,6 @@ class ConfigValidationError extends Error {
     super();
 
     this.validationErrors = validationErrors;
-    this.message = validationErrors.toString();
   }
 }
 
