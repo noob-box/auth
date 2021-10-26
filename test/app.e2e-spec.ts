@@ -19,8 +19,8 @@ describe('AppController (e2e)', () => {
     await app.init();
 
     const userService = app.get(UsersService);
-    await userService.create('test@example.com', 'UserPassword123', 'Test User', Role.USER);
-    await userService.create('admin@example.com', 'AdminPassword123', 'Test Admin', Role.ADMIN);
+    await userService.create('test@example.com', 'UserPassword123$', 'Test User', Role.USER);
+    await userService.create('admin@example.com', 'AdminPassword123$', 'Test Admin', Role.ADMIN);
   });
 
   describe('API', () => {
@@ -43,9 +43,9 @@ describe('AppController (e2e)', () => {
         it('(POST) should return OK given valid login body', async () => {
           const response = await request(app.getHttpServer())
             .post(authLoginPath)
-            .send({ email: 'test@example.com', password: 'SecretPassword123' })
+            .send({ email: 'test@example.com', password: 'UserPassword123$' })
             .expect(HttpStatus.CREATED);
-          expect(response.body.access_token).toMatch(jwtRegex);
+          expect(response.body.accessToken).toMatch(jwtRegex);
         });
       });
 

@@ -82,7 +82,7 @@ describe('AuthService', () => {
       const result = await authService.login(testUserDto);
 
       expect(jwtService.sign).toHaveBeenCalledWith(testUserJwtPayload);
-      expect(result.access_token).toMatch(jwtRegex);
+      expect(result.accessToken).toMatch(jwtRegex);
     });
   });
 });
