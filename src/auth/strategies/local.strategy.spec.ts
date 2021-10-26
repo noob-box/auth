@@ -37,6 +37,7 @@ describe('LocalStrategy', () => {
 
     it('should throw unauthorized exception if password is wrong', () => {
       const authServiceMock = new AuthServiceMock();
+      // eslint-disable-next-line unicorn/no-null
       authServiceMock.validateUser = jest.fn(() => null);
 
       const localStrategy = new LocalStrategy(authServiceMock);

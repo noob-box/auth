@@ -32,7 +32,6 @@ describe('CorsValidator', () => {
       const validator = new CorsValidator();
       expect(validator.validate('')).toBe(false);
       expect(validator.validate(' ')).toBe(false);
-      expect(validator.validate(undefined)).toBe(false);
     });
   });
 });

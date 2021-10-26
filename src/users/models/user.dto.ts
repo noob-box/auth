@@ -1,3 +1,3 @@
-import { User as DbUser } from '@prisma/client';
+import { User as DatabaseUser } from '@prisma/client';
 
-export type UserDto = Omit<DbUser, 'hashedPassword'>;
+export type UserDto = Omit<DatabaseUser, 'hashedPassword'>;

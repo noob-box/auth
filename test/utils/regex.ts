@@ -1,3 +1,3 @@
-const jwtRegex = /(^[A-Za-z0-9-_]*\.[A-Za-z0-9-_]*\.[A-Za-z0-9-_]*$)/;
+const jwtRegex = /(^(?:[\w-]*\.){2}[\w-]*$)/;
 
 export { jwtRegex };

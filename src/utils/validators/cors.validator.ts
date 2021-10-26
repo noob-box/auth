@@ -4,7 +4,7 @@ import { ValidatorConstraint, ValidatorConstraintInterface } from 'class-validat
 export class CorsValidator implements ValidatorConstraintInterface {
   // Matches domains (e.g. developer.mozilla.org)
   private readonly domainRegex =
-    /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/;
+    /^(?:[\da-z](?:[\da-z-]{0,61}[\da-z])?\.)+[\da-z][\da-z-]{0,61}[\da-z]$/;
 
   validate(value: string): boolean {
     const trimmedValue = value?.trim();
@@ -13,9 +13,9 @@ export class CorsValidator implements ValidatorConstraintInterface {
 
     if (!trimmedValue || trimmedValue.endsWith(',')) return false;
 
-    trimmedValue.split(',').forEach((x) => {
+    for (const x of trimmedValue.split(',')) {
       if (!this.domainRegex.test(x)) return false;
-    });
+    }
 
     return true;
   }

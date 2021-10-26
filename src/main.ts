@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as helmet from 'helmet';
+import helmet from 'helmet';
 import { ConfigService } from '@nestjs/config';
 import { Configuration, Environment } from './config/configuration';
 import { ISOLogger } from './utils/logger';

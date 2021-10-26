@@ -1,6 +1,7 @@
 import { Role } from '.prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+import { jwtRegex } from '../../test/utils/regex';
 import { UserDto } from '../users/models/user.dto';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
@@ -49,9 +50,9 @@ describe('AuthService', () => {
 
   describe('validateUser', () => {
     it('should call UsersService with username and password and return a user', async () => {
-      const mockFn = jest.fn();
-      mockFn.mockResolvedValue(testUserDto);
-      usersService.findOneByEmailAndValidate = mockFn;
+      const mockFunction = jest.fn();
+      mockFunction.mockResolvedValue(testUserDto);
+      usersService.findOneByEmailAndValidate = mockFunction;
 
       expect(await authService.validateUser(testEmail, testPassword)).toBe(testUserDto);
 
@@ -62,9 +63,9 @@ describe('AuthService', () => {
     });
 
     it('should reject on invalid user', async () => {
-      const mockFn = jest.fn();
-      mockFn.mockRejectedValue('error');
-      usersService.findOneByEmailAndValidate = mockFn;
+      const mockFunction = jest.fn();
+      mockFunction.mockRejectedValue('error');
+      usersService.findOneByEmailAndValidate = mockFunction;
 
       expect(authService.validateUser(testEmail, testPassword)).rejects.toBe('error');
     });
@@ -81,7 +82,7 @@ describe('AuthService', () => {
       const result = await authService.login(testUserDto);
 
       expect(jwtService.sign).toHaveBeenCalledWith(testUserJwtPayload);
-      expect(result.access_token).toMatch(/(^[\w-]*\.[\w-]*\.[\w-]*$)/);
+      expect(result.access_token).toMatch(jwtRegex);
     });
   });
 });

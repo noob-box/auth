@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Prisma, Role } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { SecurePassword } from '../utils/secure-password';
 import { UserDto } from './models/user.dto';
 
 @Injectable()
@@ -10,19 +11,23 @@ export class UsersService {
     email: true,
     name: true,
     role: true,
-    hashedPassword: false,
   };
 
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(email: string, password: string, name: string): Promise<UserDto> {
-    return this.prismaService.user.create({
-      data: {
-        email,
-        hashedPassword: password,
-        name,
-      },
+  async create(
+    email: string,
+    password: string,
+    name: string,
+    role: Role = Role.USER,
+  ): Promise<UserDto> {
+    const hashedPassword = await SecurePassword.hash(password.trim());
+    const user = await this.prismaService.user.create({
+      data: { email: email.toLowerCase().trim(), hashedPassword, name, role },
+      select: this.safeUserSelect,
     });
+
+    return user;
   }
 
   async findAll(): Promise<UserDto[]> {
@@ -39,18 +44,30 @@ export class UsersService {
     return this.findOne({ email });
   }
 
-  async findOneByEmailAndValidate(email: string, password: string): Promise<UserDto | null> {
+  async findOneByEmailAndValidate(rawEmail: string, rawPassword: string): Promise<UserDto | null> {
+    const email = rawEmail.toLowerCase().trim();
+    const password = rawPassword.trim();
+
     const user = await this.prismaService.user.findUnique({
       where: { email },
     });
 
-    if (user && user.hashedPassword === password) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { hashedPassword, ...safeUser } = user;
-      return safeUser;
+    if (!user) throw new UnauthorizedException();
+
+    const result = await SecurePassword.verify(user.hashedPassword, password);
+
+    if (result === SecurePassword.VALID_NEEDS_REHASH) {
+      // Upgrade hashed password with a more secure hash
+      const improvedHash = await SecurePassword.hash(password);
+      await this.prismaService.user.update({
+        where: { id: user.id },
+        data: { hashedPassword: improvedHash },
+      });
     }
 
-    return null;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { hashedPassword, ...safeUser } = user;
+    return safeUser;
   }
 
   private async findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<UserDto> {
