@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Prisma, Role } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { SecurePassword } from '../utils/secure-password';
-import { UserDto } from './models/user.dto';
+import { SafeUser } from './models/safe-user';
 
 @Injectable()
 export class UsersService {
@@ -20,7 +20,7 @@ export class UsersService {
     password: string,
     name: string,
     role: Role = Role.USER,
-  ): Promise<UserDto> {
+  ): Promise<SafeUser> {
     const hashedPassword = await SecurePassword.hash(password.trim());
     const user = await this.prismaService.user.create({
       data: { email: email.toLowerCase().trim(), hashedPassword, name, role },
@@ -30,21 +30,21 @@ export class UsersService {
     return user;
   }
 
-  async findAll(): Promise<UserDto[]> {
+  async findAll(): Promise<SafeUser[]> {
     return this.prismaService.user.findMany({
       select: this.safeUserSelect,
     });
   }
 
-  async findOneById(id: string): Promise<UserDto> {
+  async findOneById(id: string): Promise<SafeUser> {
     return this.findOne({ id });
   }
 
-  async findOneByEmail(email: string): Promise<UserDto> {
+  async findOneByEmail(email: string): Promise<SafeUser> {
     return this.findOne({ email });
   }
 
-  async findOneByEmailAndValidate(rawEmail: string, rawPassword: string): Promise<UserDto | null> {
+  async findOneByEmailAndValidate(rawEmail: string, rawPassword: string): Promise<SafeUser | null> {
     const email = rawEmail.toLowerCase().trim();
     const password = rawPassword.trim();
 
@@ -70,7 +70,7 @@ export class UsersService {
     return safeUser;
   }
 
-  private async findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<UserDto> {
+  private async findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<SafeUser> {
     return this.prismaService.user.findUnique({
       where: userWhereUniqueInput,
       select: this.safeUserSelect,

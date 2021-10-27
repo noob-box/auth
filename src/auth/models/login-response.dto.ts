@@ -1,5 +1,5 @@
-type LoginResponse = {
+class LoginResponse {
   accessToken: string;
-};
+}
 
 export { LoginResponse };
