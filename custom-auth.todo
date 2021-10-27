@@ -1,3 +1,7 @@
+Authentication:
+  ☐ Add cookie to login response
+  ☐ Add refresh tokens
+
 Tests:
   ☐ DB setup, seeding and teardown for E2E tests 
 
