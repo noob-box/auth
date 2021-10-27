@@ -1,7 +1,6 @@
 import { plainToClass } from 'class-transformer';
 import {
   IsEnum,
-  isInt,
   IsInt,
   IsNotEmpty,
   IsUrl,
