@@ -9,7 +9,6 @@ import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { LoginRequest } from './models/login-request.dto';
-import { LoginResponse } from './models/login-response.dto';
 
 @Controller('auth')
 @ApiTags('Authentication')
