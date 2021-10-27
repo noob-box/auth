@@ -1,5 +1,4 @@
 Authentication:
-  ☐ Add cookie to login response
   ☐ Add refresh tokens
 
 Tests:
@@ -34,6 +33,7 @@ Archive:
   
   Authentication:
     ✔ Add password hashing (e.g. npm: secure-password) @done(21-10-26 21:33)
+    ✔ Add cookie to login response @started(21-10-27 17:31) @done(21-10-27 19:52) @lasted(2h21m36s)
 
   Validation:
     ✔ Validate all requests and responses @started(21-10-26 21:43) @done(21-10-26 22:34) @lasted(51m15s)

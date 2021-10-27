@@ -30,7 +30,7 @@ describe('Configuration', () => {
         NODE_ENV: 'production',
         DATABASE_URL: 'test:pass@localhost:5432/db',
         JWT_SECRET: 'ImTheSuperSecretTestSecretYouKnow_123',
-        JWT_EXPIRY: '1w',
+        JWT_EXPIRY: 120,
         SERVER_PORT: 3000,
       };
 

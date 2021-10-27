@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Prisma, Role } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
-import { SecurePassword } from '../utils/secure-password';
+import { SecurePassword } from '../utils/auth-utils';
 import { SafeUser } from './models/safe-user';
 
 @Injectable()

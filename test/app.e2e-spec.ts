@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from './../src/app.module';
-import { jwtRegex } from './utils/regex';
+import { containsJwtRegex } from './utils/regex';
 import { UsersService } from '../src/users/users.service';
 import { Role } from '@prisma/client';
 
@@ -40,12 +40,15 @@ describe('AppController (e2e)', () => {
           return request(app.getHttpServer()).post(authLoginPath).expect(HttpStatus.UNAUTHORIZED);
         });
 
-        it('(POST) should return OK given valid login body', async () => {
+        it('(POST) should return cookie given valid login body', async () => {
           const response = await request(app.getHttpServer())
             .post(authLoginPath)
             .send({ email: 'test@example.com', password: 'UserPassword123$' })
             .expect(HttpStatus.CREATED);
-          expect(response.body.accessToken).toMatch(jwtRegex);
+
+          const cookie = response.headers['set-cookie'][0];
+          expect(cookie.startsWith('sAccessToken='));
+          expect(cookie).toMatch(containsJwtRegex);
         });
       });
 

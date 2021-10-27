@@ -71,7 +71,7 @@ describe('AuthService', () => {
     });
   });
 
-  describe('login', () => {
+  describe('getSignedJWT', () => {
     it('should call jwt sign with payload and return access token', async () => {
       jwtService.sign = jest
         .fn()
@@ -79,10 +79,10 @@ describe('AuthService', () => {
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNTllNDBlNS05NTZjLTQ2OGUtOTk4ZC1mN2IwYTg4NTQ1ZmUiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJuYW1lIjoiVGVzdCBVc2VyIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE2MzQ5ODY1MTksImV4cCI6MTYzNTU5MTMxOX0.J_P99MUqNCqlpiCwC1EpEcOamaTWJ8AKXFGvF6VwJH4',
         );
 
-      const result = await authService.login(testUserDto);
+      const result = await authService.getSignedJWT(testUserDto);
 
       expect(jwtService.sign).toHaveBeenCalledWith(testUserJwtPayload);
-      expect(result.accessToken).toMatch(jwtRegex);
+      expect(result).toMatch(jwtRegex);
     });
   });
 });

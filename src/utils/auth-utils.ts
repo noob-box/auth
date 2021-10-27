@@ -5,11 +5,11 @@ import { nanoid } from 'nanoid';
 
 const SP = () => new SecurePasswordLib();
 
-export const hash256 = (input = '') => {
+const hash256 = (input = '') => {
   return crypto.createHash('sha256').update(input).digest('hex');
 };
 
-export const generateToken = (numberOfCharacters = 32) => nanoid(numberOfCharacters);
+const generateToken = (numberOfCharacters = 32) => nanoid(numberOfCharacters);
 
 const SecurePassword = {
   ...SecurePasswordLib,
@@ -47,4 +47,4 @@ const SecurePassword = {
   },
 };
 
-export { SecurePassword };
+export { SecurePassword, generateToken, hash256 };

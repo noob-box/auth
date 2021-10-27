@@ -1,4 +1,4 @@
-import { SecurePassword } from './secure-password';
+import { SecurePassword } from './auth-utils';
 
 describe('SecurePassword', () => {
   describe('hash', () => {
