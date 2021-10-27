@@ -1,6 +1,7 @@
 import { plainToClass } from 'class-transformer';
 import {
   IsEnum,
+  isInt,
   IsInt,
   IsNotEmpty,
   IsUrl,
@@ -40,8 +41,15 @@ class Configuration {
   JWT_SECRET: string;
 
   // eslint-disable-next-line unicorn/better-regex
-  @Matches(/^\d+(s|m|h|d|w|y)$/)
-  JWT_EXPIRY = '7d';
+  @IsInt()
+  JWT_EXPIRY = 604_800;
+
+  // Only match domain names
+  @Matches(
+    /^(([\dA-Za-z]|[\dA-Za-z][\dA-Za-z\-]*[\dA-Za-z])\.)*([\dA-Za-z]|[\dA-Za-z][\dA-Za-z\-]*[\dA-Za-z])$/,
+    { message: '$property must be a valid hostname/domain' },
+  )
+  COOKIE_DOMAIN = 'localhost';
 }
 
 const getValidatedConfiguration = (config: Record<string, unknown>) => {

@@ -6,6 +6,7 @@ import { Configuration, Environment } from './config/configuration';
 import { ISOLogger } from './utils/logger';
 import { setupSwagger } from './utils/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -14,6 +15,8 @@ async function bootstrap() {
   const config = app.get<ConfigService<Configuration>>(ConfigService);
 
   app.use(helmet());
+  app.use(cookieParser());
+
   app.enableCors({
     origin: config.get('CORS'),
     credentials: true,
