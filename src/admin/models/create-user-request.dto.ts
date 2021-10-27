@@ -1,7 +1,7 @@
-import { Role } from '.prisma/client';
+import { Role } from '@prisma/client';
 import { IsEmail, IsEnum, IsOptional, Matches, MinLength } from 'class-validator';
 
-class CreateUserBody {
+class CreateUserRequest {
   @IsEmail()
   email: string;
 
@@ -20,4 +20,4 @@ class CreateUserBody {
   password: string;
 }
 
-export { CreateUserBody };
+export { CreateUserRequest };
