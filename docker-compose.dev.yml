@@ -1,22 +1,11 @@
 version: '3'
 
 services:
-  supertokens:
-    image: supertokens/supertokens-postgresql:3.6
-    ports:
-      - 3567:3567
-    environment:
-      POSTGRESQL_CONNECTION_URI: 'postgresql://postgres:postgres@db:5432/nboxauth'
-      POSTGRESQL_TABLE_SCHEMA: 'supertokens'
-      DISABLE_TELEMETRY: 'true'
-    depends_on:
-      - db
-
   db:
-    image: postgres:13.4
+    image: postgres:14
     ports:
-      - 5432:5432
+      - '5432:5432'
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: nboxauth
+      POSTGRES_DB: auth

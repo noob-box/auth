@@ -1,39 +1,35 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { UsersService } from '../users/users.service';
+import { SafeUser } from '../users/models/safe-user';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '@prisma/client';
-import { NBoxUser, UserService } from '../user/user.service';
-import { Roles } from '../auth/roles.decorator';
-import { ApiTags } from '@nestjs/swagger';
-import { v4 as uuidv4 } from 'uuid';
-import UserPasswordResetUrlDto from './models/UserPasswordResetUrl.dto';
+import { RolesGuard } from '../auth/guards/role.guard';
+import { GetUserQuery } from './models/get-user-query.dto';
+import { CreateUserRequest } from './models/create-user-request.dto';
+import { UserResponse } from '../shared/models/user-response.dto';
 
 @Controller('admin')
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(Role.ADMIN)
 @ApiTags('Administration')
+@ApiBearerAuth()
 export class AdminController {
-  constructor(private userService: UserService) {}
+  constructor(private readonly userService: UsersService) {}
 
   @Get('users')
-  async getUsers(): Promise<NBoxUser[]> {
-    return this.userService.getUsers();
+  async getUsers(): Promise<UserResponse[]> {
+    return this.userService.findAll();
   }
 
   @Get('user')
-  async getUser(@Param('emailOrId') emailOrId: string): Promise<NBoxUser> {
-    return this.userService.getUserByEmailOrId(emailOrId);
+  async getUser(@Query() query: GetUserQuery): Promise<UserResponse> {
+    return this.userService.findOneByEmail(query.email);
   }
 
   @Post('user')
-  async postUser(
-    @Body('email') email: string,
-    @Body('displayName') displayName: string,
-  ): Promise<NBoxUser> {
-    return this.userService.createUser(email, uuidv4(), displayName);
-  }
-
-  @Post('user/password-reset-url')
-  async postUserPasswordResetUrl(@Body('userId') userId: string): Promise<UserPasswordResetUrlDto> {
-    return {
-      url: await this.userService.createUserPasswordResetUrl(userId),
-    };
+  async postUser(@Body() body: CreateUserRequest): Promise<SafeUser> {
+    return this.userService.create(body.email, body.password, body.name, body.role);
   }
 }

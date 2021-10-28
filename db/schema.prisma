@@ -11,9 +11,13 @@ generator client {
 }
 
 model User {
-  id          String @id @db.Uuid
-  role        Role   @default(USER)
-  displayName String
+  id             String   @id @unique @default(uuid()) @db.Uuid
+  email          String   @unique
+  hashedPassword String
+  name           String
+  role           Role     @default(USER)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 enum Role {

@@ -1,3 +1,4 @@
+// eslint-disable-next-line unicorn/prevent-abbreviations
 import type { Config } from '@jest/types';
 
 export default async (): Promise<Config.InitialOptions> => {

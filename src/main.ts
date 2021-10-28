@@ -1,29 +1,33 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import supertokens from 'supertokens-node';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as helmet from 'helmet';
+import helmet from 'helmet';
+import { ConfigService } from '@nestjs/config';
+import { Configuration, Environment } from './config/configuration';
+import { ISOLogger } from './utils/logger';
+import { setupSwagger } from './utils/swagger';
+import { ValidationPipe } from '@nestjs/common';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: new ISOLogger(),
+  });
+  const config = app.get<ConfigService<Configuration>>(ConfigService);
+
   app.use(helmet());
+  app.use(cookieParser());
+
   app.enableCors({
-    origin: ['http://localhost:3001'],
-    allowedHeaders: ['content-type', ...supertokens.getAllCORSHeaders()],
+    origin: config.get('CORS'),
     credentials: true,
   });
 
-  const config = new DocumentBuilder()
-    .setTitle('noob-box Auth')
-    .setDescription('Authentication API for noob-box.net services')
-    .addCookieAuth('sAccessToken')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document, {
-    customSiteTitle: 'noob-box Auth API Reference',
-    customCss: '.topbar { display: none; }',
-  });
+  if (config.get('NODE_ENV') === Environment.Development) {
+    setupSwagger(app);
+  }
 
-  await app.listen(3000);
+  app.useGlobalPipes(new ValidationPipe());
+
+  await app.listen(config.get('SERVER_PORT'));
 }
 bootstrap();

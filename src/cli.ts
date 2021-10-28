@@ -1,47 +1,60 @@
 #!/usr/bin/env node
 
+import { Role } from '@prisma/client';
 import { NestFactory } from '@nestjs/core';
 import { Command } from 'commander';
-import { UserService } from './user/user.service';
 import { AppModule } from './app.module';
+import { UsersService } from './users/users.service';
 
 function prettyJsonPrint(text: any) {
-  console.log(JSON.stringify(text, null, 2));
+  console.log(JSON.stringify(text, undefined, 2));
 }
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule, {
     logger: false,
   });
-  const userService = app.get(UserService);
+  const usersService = app.get(UsersService);
 
   const program = new Command();
 
   const userCommand = program.command('user').description('Manage users');
+  const userGetCommand = userCommand.command('get').description('Manage users');
 
   userCommand
     .command('list')
     .description('Lists all users')
     .action(async () => {
-      prettyJsonPrint(await userService.getUsers());
+      prettyJsonPrint(await usersService.findAll());
     });
 
   userCommand
     .command('create')
     .description('Creates a user')
-    .argument('<username>')
+    .argument('<email>')
     .argument('<password>')
     .argument('<displayName>')
-    .action(async (username: string, password: string, displayName: string) => {
-      prettyJsonPrint(await userService.createUser(username, password, displayName));
+    .argument('[role]')
+    .action(async (email: string, password: string, displayName: string, role: Role) => {
+      prettyJsonPrint(
+        await usersService.create(email, password, displayName, role?.toUpperCase() as Role),
+      );
     });
 
-  userCommand
-    .command('get')
-    .description('Get a specific user by email or id')
-    .argument('<emailOrId>')
-    .action(async (emailOrId: string) => {
-      prettyJsonPrint(await userService.getUserByEmailOrId(emailOrId));
+  userGetCommand
+    .command('id')
+    .description('Get a specific user by id')
+    .argument('<id>')
+    .action(async (id: string) => {
+      prettyJsonPrint(await usersService.findOneById(id));
+    });
+
+  userGetCommand
+    .command('email')
+    .description('Get a specific user by email')
+    .argument('<email>')
+    .action(async (email: string) => {
+      prettyJsonPrint(await usersService.findOneByEmail(email));
     });
 
   await program.parseAsync(process.argv);
