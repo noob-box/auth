@@ -8,6 +8,9 @@ import {
   getValidatedConfiguration,
 } from './configuration';
 
+// Suppress validation error output
+jest.mock('../utils/logger');
+
 describe('Configuration', () => {
   describe('getValidatedConfiguration', () => {
     it('should return config given minimal valid input', async () => {
@@ -32,6 +35,7 @@ describe('Configuration', () => {
         JWT_SECRET: 'ImTheSuperSecretTestSecretYouKnow_123',
         JWT_EXPIRY: 120,
         SERVER_PORT: 3000,
+        CORS: 'localhost',
       };
 
       const expectedConfiguration = new Configuration();
