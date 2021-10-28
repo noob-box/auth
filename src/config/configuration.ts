@@ -1,17 +1,20 @@
-import { plainToClass } from 'class-transformer';
+import { plainToClass, Transform, Type } from 'class-transformer';
 import {
   IsEnum,
   IsInt,
-  IsNotEmpty,
   IsUrl,
   Matches,
   Max,
   Min,
   MinLength,
   Validate,
+  ValidateIf,
   validateSync,
   ValidationError,
 } from 'class-validator';
+import { ISOLogger } from '../utils/logger';
+import { hostNameRegex } from '../utils/regex';
+import { CorsRegexValidator } from '../utils/validators/cors-regex.validator';
 import { CorsValidator } from '../utils/validators/cors.validator';
 
 enum Environment {
@@ -32,9 +35,14 @@ class Configuration {
   @Max(65_535)
   SERVER_PORT = 3000;
 
-  @IsNotEmpty()
+  @ValidateIf((x) => x.CORS_REGEX === undefined)
   @Validate(CorsValidator)
-  CORS = '*';
+  CORS?: string = 'localhost';
+
+  @ValidateIf((x) => x.CORS_REGEX !== undefined)
+  @Validate(CorsRegexValidator)
+  @Transform(({ value }) => new RegExp(value), { toClassOnly: true })
+  CORS_REGEX?: RegExp;
 
   @MinLength(32)
   JWT_SECRET: string;
@@ -43,13 +51,21 @@ class Configuration {
   @IsInt()
   JWT_EXPIRY = 604_800;
 
-  // Only match domain names
-  @Matches(
-    /^(([\dA-Za-z]|[\dA-Za-z][\dA-Za-z\-]*[\dA-Za-z])\.)*([\dA-Za-z]|[\dA-Za-z][\dA-Za-z\-]*[\dA-Za-z])$/,
-    { message: '$property must be a valid hostname/domain' },
-  )
+  @Matches(hostNameRegex, { message: '$property must be a valid hostname/domain' })
   COOKIE_DOMAIN = 'localhost';
 }
+
+const logValidationErrors = (errors: ValidationError[]) => {
+  const logger = new ISOLogger(Configuration.name);
+
+  for (const error of errors) {
+    logger.error(`Validation error:
+${error.property}: ${error.value}
+Failed validations:
+${JSON.stringify(error.constraints)}
+`);
+  }
+};
 
 const getValidatedConfiguration = (config: Record<string, unknown>) => {
   const validatedConfig = plainToClass(Configuration, config, {
@@ -61,7 +77,10 @@ const getValidatedConfiguration = (config: Record<string, unknown>) => {
     stopAtFirstError: true,
   });
 
-  if (errors.length > 0) throw new ConfigValidationError(errors);
+  if (errors.length > 0) {
+    logValidationErrors(errors);
+    throw new ConfigValidationError(errors);
+  }
 
   return validatedConfig;
 };
