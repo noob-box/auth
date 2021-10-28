@@ -1,4 +1,4 @@
-import { plainToClass, Transform, Type } from 'class-transformer';
+import { plainToClass, Transform } from 'class-transformer';
 import {
   IsEnum,
   IsInt,
@@ -47,7 +47,6 @@ class Configuration {
   @MinLength(32)
   JWT_SECRET: string;
 
-  // eslint-disable-next-line unicorn/better-regex
   @IsInt()
   JWT_EXPIRY = 604_800;
 
