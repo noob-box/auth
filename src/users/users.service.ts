@@ -70,6 +70,14 @@ export class UsersService {
     return safeUser;
   }
 
+  async updateUserRole(id: string, data: Prisma.UserUpdateArgs) {
+    return this.prismaService.user.update({
+      where: { id },
+      data,
+      select: this.safeUserSelect,
+    });
+  }
+
   private async findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<SafeUser> {
     return this.prismaService.user.findUnique({
       where: userWhereUniqueInput,
