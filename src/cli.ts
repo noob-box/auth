@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { Role } from '@prisma/client';
 import { NestFactory } from '@nestjs/core';
 import { Command } from 'commander';
 import { AppModule } from './app.module';
@@ -33,8 +34,11 @@ async function bootstrap() {
     .argument('<email>')
     .argument('<password>')
     .argument('<displayName>')
-    .action(async (email: string, password: string, displayName: string) => {
-      prettyJsonPrint(await usersService.create(email, password, displayName));
+    .argument('[role]')
+    .action(async (email: string, password: string, displayName: string, role: Role) => {
+      prettyJsonPrint(
+        await usersService.create(email, password, displayName, role?.toUpperCase() as Role),
+      );
     });
 
   userGetCommand

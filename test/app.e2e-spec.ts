@@ -7,7 +7,7 @@ import { containsJwtRegex } from './utils/regex';
 import { UsersService } from '../src/users/users.service';
 import { Role } from '@prisma/client';
 
-describe('AppController (e2e)', () => {
+describe('App (e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
