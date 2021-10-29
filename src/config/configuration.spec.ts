@@ -33,7 +33,8 @@ describe('Configuration', () => {
         NODE_ENV: 'production',
         DATABASE_URL: 'test:pass@localhost:5432/db',
         JWT_SECRET: 'ImTheSuperSecretTestSecretYouKnow_123',
-        JWT_EXPIRY: 120,
+        JWT_ACCESS_EXPIRY: 120,
+        JWT_REFRESH_EXPIRY: 600,
         SERVER_PORT: 3000,
         CORS: 'localhost',
       };
@@ -42,7 +43,8 @@ describe('Configuration', () => {
       expectedConfiguration.NODE_ENV = Environment.Production;
       expectedConfiguration.DATABASE_URL = validEnvironmentInput.DATABASE_URL;
       expectedConfiguration.JWT_SECRET = validEnvironmentInput.JWT_SECRET;
-      expectedConfiguration.JWT_EXPIRY = validEnvironmentInput.JWT_EXPIRY;
+      expectedConfiguration.JWT_ACCESS_EXPIRY = validEnvironmentInput.JWT_ACCESS_EXPIRY;
+      expectedConfiguration.JWT_REFRESH_EXPIRY = validEnvironmentInput.JWT_REFRESH_EXPIRY;
       expectedConfiguration.JWT_SECRET = validEnvironmentInput.JWT_SECRET;
 
       const validatedConfig = getValidatedConfiguration(validEnvironmentInput);

@@ -1,10 +1,11 @@
-import { Role } from '.prisma/client';
+import { Role } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { jwtRegex } from '../../test/utils/regex';
 import { SafeUser } from '../users/models/safe-user';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
+import { ConfigService } from '@nestjs/config';
 
 jest.mock('../users/users.service');
 jest.mock('@nestjs/jwt');
@@ -31,7 +32,7 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService, UsersService, JwtService],
+      providers: [AuthService, UsersService, JwtService, ConfigService],
     }).compile();
 
     authService = module.get<AuthService>(AuthService);
@@ -71,7 +72,7 @@ describe('AuthService', () => {
     });
   });
 
-  describe('getSignedJWT', () => {
+  describe('getAccessToken', () => {
     it('should call jwt sign with payload and return access token', async () => {
       jwtService.sign = jest
         .fn()
@@ -79,10 +80,10 @@ describe('AuthService', () => {
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNTllNDBlNS05NTZjLTQ2OGUtOTk4ZC1mN2IwYTg4NTQ1ZmUiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJuYW1lIjoiVGVzdCBVc2VyIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE2MzQ5ODY1MTksImV4cCI6MTYzNTU5MTMxOX0.J_P99MUqNCqlpiCwC1EpEcOamaTWJ8AKXFGvF6VwJH4',
         );
 
-      const result = await authService.getSignedJWT(testUserDto);
+      const result = await authService.getAccessToken(testUserDto);
 
       expect(jwtService.sign).toHaveBeenCalledWith(testUserJwtPayload);
-      expect(result).toMatch(jwtRegex);
+      expect(result.jwt).toMatch(jwtRegex);
     });
   });
 });

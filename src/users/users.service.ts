@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { Prisma, Role } from '@prisma/client';
+import { Prisma, Role, Token, TokenType } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
-import { SecurePassword } from '../utils/auth-utils';
+import { hash256, SecurePassword } from '../utils/auth-utils';
 import { SafeUser } from './models/safe-user';
 
 @Injectable()
@@ -68,6 +68,43 @@ export class UsersService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { hashedPassword, ...safeUser } = user;
     return safeUser;
+  }
+
+  async addUserRefreshToken(id: string, refreshToken: string, expiresAt: Date): Promise<Token> {
+    const hashedToken = hash256(refreshToken);
+
+    return this.prismaService.token.create({
+      data: {
+        user: { connect: { id } },
+        type: TokenType.REFRESH,
+        expiresAt,
+        hashedToken,
+      },
+    });
+  }
+
+  async validateRefreshToken(id: string, hashedToken: string): Promise<boolean> {
+    const possibleToken = await this.prismaService.token.findFirst({
+      where: {
+        hashedToken,
+        userId: id,
+      },
+    });
+
+    // 2. If token not found, error
+    if (!possibleToken) {
+      throw new UnauthorizedException();
+    }
+    const savedToken = possibleToken;
+
+    // 3. Delete token so it can't be used again
+    await this.prismaService.token.delete({ where: { id: savedToken.id } });
+
+    if (savedToken.expiresAt < new Date()) {
+      throw new UnauthorizedException();
+    }
+
+    return true;
   }
 
   async updateUserRole(id: string, data: Prisma.UserUpdateArgs) {

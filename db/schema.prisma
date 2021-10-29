@@ -18,9 +18,28 @@ model User {
   role           Role     @default(USER)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  tokens Token[]
+}
+
+model Token {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  hashedToken String
+  type        TokenType
+  expiresAt   DateTime
+  userId      String    @db.Uuid
+  user        User      @relation(fields: [userId], references: [id])
+
+  @@unique([hashedToken, type])
 }
 
 enum Role {
   USER
   ADMIN
+}
+
+enum TokenType {
+  REFRESH
 }

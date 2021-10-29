@@ -48,7 +48,10 @@ class Configuration {
   JWT_SECRET: string;
 
   @IsInt()
-  JWT_EXPIRY = 604_800;
+  JWT_ACCESS_EXPIRY = 60 * 60;
+
+  @IsInt()
+  JWT_REFRESH_EXPIRY = 30 * 24 * 60 * 60;
 
   @Matches(hostNameRegex, { message: '$property must be a valid hostname/domain' })
   COOKIE_DOMAIN = 'localhost';

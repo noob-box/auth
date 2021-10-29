@@ -1,5 +1,7 @@
 Authentication:
-  ☐ Add refresh tokens
+  ☐ Add refresh tokens @started(21-10-29 09:11)
+  ☐ Fix tests
+  ☐ Add tests for refresh tokens (controller, service, strategy)
 
 Tests:
   ☐ DB setup, seeding and teardown for E2E tests 

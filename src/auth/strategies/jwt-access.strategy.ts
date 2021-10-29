@@ -7,13 +7,13 @@ import { UsersService } from '../../users/users.service';
 import { Request } from 'express';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtAccessStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly configService: ConfigService<Configuration>,
     private readonly usersService: UsersService,
   ) {
     super({
-      jwtFromRequest: JwtStrategy.cookieExtractor,
+      jwtFromRequest: JwtAccessStrategy.cookieExtractor,
       ignoreExpiration: false,
       secretOrKey: configService.get('JWT_SECRET'),
     });

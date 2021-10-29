@@ -6,7 +6,8 @@ import { Configuration } from '../config/configuration';
 import { UserResponse } from '../shared/models/user-response.dto';
 import { SafeUser } from '../users/models/safe-user';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { JwtAccessGuard } from './guards/jwt-access.guard';
+import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { LoginRequest } from './models/login-request.dto';
 
@@ -25,21 +26,35 @@ export class AuthController {
     @Req() { user }: { user: SafeUser },
     @Res() response: Response,
   ): Promise<UserResponse> {
-    const jwt = this.authService.getSignedJWT(user);
-    const expiryDate = new Date(Date.now() + this.configService.get('JWT_EXPIRY'));
-
-    response.cookie('sAccessToken', jwt, {
-      expires: expiryDate,
-      domain: this.configService.get('COOKIE_DOMAIN'),
-      httpOnly: true,
-      secure: true,
-    });
-
+    const { name, jwt, options } = this.authService.getAccessToken(user);
+    response.cookie(name, jwt, options);
     response.send(user);
     return user;
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtRefreshGuard)
+  @Post('refresh')
+  async refresh(
+    @Req() { user }: { user: SafeUser },
+    @Res() response: Response,
+  ): Promise<UserResponse> {
+    const accessTokenCookie = this.authService.getAccessToken(user);
+    const refreshTokenCookie = this.authService.getRefreshToken(user);
+
+    await this.authService.addRefreshTokenToUser(
+      user.id,
+      refreshTokenCookie.jwt,
+      refreshTokenCookie.options.expires,
+    );
+
+    response.cookie(accessTokenCookie.name, accessTokenCookie.jwt, accessTokenCookie.options);
+    response.cookie(refreshTokenCookie.name, refreshTokenCookie.jwt, refreshTokenCookie.options);
+    response.send(user);
+
+    return user;
+  }
+
+  @UseGuards(JwtAccessGuard)
   @ApiBearerAuth()
   @Get('profile')
   getProfile(@Req() { user }: { user: SafeUser }): UserResponse {

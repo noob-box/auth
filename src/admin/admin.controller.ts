@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UsersService } from '../users/users.service';
 import { SafeUser } from '../users/models/safe-user';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { JwtAccessGuard } from '../auth/guards/jwt-access.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '@prisma/client';
 import { RolesGuard } from '../auth/guards/role.guard';
@@ -11,7 +11,7 @@ import { CreateUserRequest } from './models/create-user-request.dto';
 import { UserResponse } from '../shared/models/user-response.dto';
 
 @Controller('admin')
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAccessGuard, RolesGuard)
 @Roles(Role.ADMIN)
 @ApiTags('Administration')
 @ApiBearerAuth()
