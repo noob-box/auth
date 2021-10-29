@@ -26,7 +26,7 @@ export class AuthService {
     return await this.usersService.addUserRefreshToken(id, token, expiryDate);
   }
 
-  getAccessToken(user: SafeUser): JwtCookie {
+  getAccessTokenCookie(user: SafeUser): JwtCookie {
     const { id: sub, email, name, role } = user;
     const payload = {
       sub,
@@ -36,10 +36,10 @@ export class AuthService {
     };
 
     const expirySeconds = this.configService.get('JWT_ACCESS_EXPIRY');
-    return this.createAuthCookie('sRefreshToken', payload, expirySeconds);
+    return this.createAuthCookie('sAccessToken', payload, expirySeconds);
   }
 
-  getRefreshToken(user: SafeUser): JwtCookie {
+  getRefreshTokenCookie(user: SafeUser): JwtCookie {
     const expirySeconds = this.configService.get('JWT_REFRESH_EXPIRY');
     return this.createAuthCookie('sRefreshToken', { sub: user.id }, expirySeconds);
   }

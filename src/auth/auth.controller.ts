@@ -26,10 +26,7 @@ export class AuthController {
     @Req() { user }: { user: SafeUser },
     @Res() response: Response,
   ): Promise<UserResponse> {
-    const { name, jwt, options } = this.authService.getAccessToken(user);
-    response.cookie(name, jwt, options);
-    response.send(user);
-    return user;
+    return this.handleSignInAndRefresh(user, response);
   }
 
   @UseGuards(JwtRefreshGuard)
@@ -38,8 +35,19 @@ export class AuthController {
     @Req() { user }: { user: SafeUser },
     @Res() response: Response,
   ): Promise<UserResponse> {
-    const accessTokenCookie = this.authService.getAccessToken(user);
-    const refreshTokenCookie = this.authService.getRefreshToken(user);
+    return this.handleSignInAndRefresh(user, response);
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @ApiBearerAuth()
+  @Get('profile')
+  getProfile(@Req() { user }: { user: SafeUser }): UserResponse {
+    return user;
+  }
+
+  private async handleSignInAndRefresh(user: SafeUser, response: Response): Promise<SafeUser> {
+    const accessTokenCookie = this.authService.getAccessTokenCookie(user);
+    const refreshTokenCookie = this.authService.getRefreshTokenCookie(user);
 
     await this.authService.addRefreshTokenToUser(
       user.id,
@@ -51,13 +59,6 @@ export class AuthController {
     response.cookie(refreshTokenCookie.name, refreshTokenCookie.jwt, refreshTokenCookie.options);
     response.send(user);
 
-    return user;
-  }
-
-  @UseGuards(JwtAccessGuard)
-  @ApiBearerAuth()
-  @Get('profile')
-  getProfile(@Req() { user }: { user: SafeUser }): UserResponse {
     return user;
   }
 }

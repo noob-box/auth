@@ -6,9 +6,11 @@ import { SafeUser } from '../users/models/safe-user';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { ConfigService } from '@nestjs/config';
+import { Configuration } from '../config/configuration';
 
 jest.mock('../users/users.service');
 jest.mock('@nestjs/jwt');
+jest.mock('@nestjs/config');
 
 const testEmail = 'test@example.com';
 const testPassword = 'testPassword';
@@ -29,6 +31,7 @@ describe('AuthService', () => {
   let authService: AuthService;
   let usersService: UsersService;
   let jwtService: JwtService;
+  let configService: ConfigService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -38,6 +41,7 @@ describe('AuthService', () => {
     authService = module.get<AuthService>(AuthService);
     usersService = module.get<UsersService>(UsersService);
     jwtService = module.get<JwtService>(JwtService);
+    configService = module.get<ConfigService>(ConfigService);
   });
 
   afterEach(() => {
@@ -72,18 +76,45 @@ describe('AuthService', () => {
     });
   });
 
-  describe('getAccessToken', () => {
-    it('should call jwt sign with payload and return access token', async () => {
+  describe('getAccessTokenCookie', () => {
+    it('should call jwt sign with payload and return access token cookie', async () => {
+      configService.get = jest.fn().mockReturnValue(3600);
+      jest.spyOn(Date, 'now').mockReturnValueOnce(1000);
+
       jwtService.sign = jest
         .fn()
         .mockReturnValue(
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNTllNDBlNS05NTZjLTQ2OGUtOTk4ZC1mN2IwYTg4NTQ1ZmUiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJuYW1lIjoiVGVzdCBVc2VyIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE2MzQ5ODY1MTksImV4cCI6MTYzNTU5MTMxOX0.J_P99MUqNCqlpiCwC1EpEcOamaTWJ8AKXFGvF6VwJH4',
         );
 
-      const result = await authService.getAccessToken(testUserDto);
+      const result = await authService.getAccessTokenCookie(testUserDto);
 
-      expect(jwtService.sign).toHaveBeenCalledWith(testUserJwtPayload);
+      expect(jwtService.sign).toHaveBeenCalledWith(testUserJwtPayload, { expiresIn: 3600 });
+
+      expect(result.name).toBe('sAccessToken');
       expect(result.jwt).toMatch(jwtRegex);
+      expect(result.options.expires).toStrictEqual(new Date('1970-01-01T00:00:04.600Z'));
+    });
+  });
+
+  describe('getRefreshTokenCookie', () => {
+    it('should call jwt sign with payload and return refresh token cookie', async () => {
+      configService.get = jest.fn().mockReturnValue(3600);
+      jest.spyOn(Date, 'now').mockReturnValueOnce(1000);
+
+      jwtService.sign = jest
+        .fn()
+        .mockReturnValue(
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNTllNDBlNS05NTZjLTQ2OGUtOTk4ZC1mN2IwYTg4NTQ1ZmUiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJuYW1lIjoiVGVzdCBVc2VyIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE2MzQ5ODY1MTksImV4cCI6MTYzNTU5MTMxOX0.J_P99MUqNCqlpiCwC1EpEcOamaTWJ8AKXFGvF6VwJH4',
+        );
+
+      const result = await authService.getRefreshTokenCookie(testUserDto);
+
+      expect(jwtService.sign).toHaveBeenCalledWith({ sub: testUserDto.id }, { expiresIn: 3600 });
+
+      expect(result.name).toBe('sRefreshToken');
+      expect(result.jwt).toMatch(jwtRegex);
+      expect(result.options.expires).toStrictEqual(new Date('1970-01-01T00:00:04.600Z'));
     });
   });
 });
