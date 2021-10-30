@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { Configuration } from '../../config/configuration';
 import { UsersService } from '../../users/users.service';
 import { Request } from 'express';
+import { hash256 } from '../../utils/auth-utils';
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
@@ -22,9 +23,13 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
 
   async validate(request: Request, payload: any) {
     const user = await this.usersService.findOneById(payload.sub);
+    console.log('got user', user);
     const token = request.cookies?.sRefreshToken;
+    console.log('got token', token);
 
     const isValidToken = await this.usersService.validateRefreshToken(user.id, token);
+
+    console.log('isValidToken', isValidToken);
 
     if (!user || !isValidToken) {
       throw new UnauthorizedException();

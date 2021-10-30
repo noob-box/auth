@@ -1,4 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { Prisma, Role, Token, TokenType } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { hash256, SecurePassword } from '../utils/auth-utils';
@@ -83,7 +84,8 @@ export class UsersService {
     });
   }
 
-  async validateRefreshToken(id: string, hashedToken: string): Promise<boolean> {
+  async validateRefreshToken(id: string, token: string): Promise<boolean> {
+    const hashedToken = hash256(token);
     const possibleToken = await this.prismaService.token.findFirst({
       where: {
         hashedToken,
@@ -120,5 +122,19 @@ export class UsersService {
       where: userWhereUniqueInput,
       select: this.safeUserSelect,
     });
+  }
+
+  @Cron(CronExpression.EVERY_30_SECONDS)
+  async deleteExpiredTokens() {
+    console.log('RUNNING SCHEDULED JOB');
+    const now = new Date();
+    await this.prismaService.token.deleteMany({
+      where: {
+        expiresAt: {
+          lt: now,
+        },
+      },
+    });
+    console.log('DONE RUNNING SCHEDULED JOB');
   }
 }

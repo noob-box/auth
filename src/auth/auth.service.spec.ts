@@ -6,7 +6,6 @@ import { SafeUser } from '../users/models/safe-user';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { ConfigService } from '@nestjs/config';
-import { Configuration } from '../config/configuration';
 
 jest.mock('../users/users.service');
 jest.mock('@nestjs/jwt');

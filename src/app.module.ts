@@ -5,6 +5,7 @@ import { AdminModule } from './admin/admin.module';
 import { ConfigModule } from '@nestjs/config';
 import { getValidatedConfiguration } from './config/configuration';
 import { HealthModule } from './health/health.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { HealthModule } from './health/health.module';
       validate: getValidatedConfiguration,
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
     AuthModule,
     UsersModule,
     AdminModule,
