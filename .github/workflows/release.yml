@@ -53,6 +53,8 @@ jobs:
     needs: build-publish-release
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Create .artifacts dir
         run: mkdir .artifacts
       - name: Generate Changelog
