@@ -1,0 +1,12 @@
+Authentication:
+    ☐ Refresh token flow
+
+Configuration:
+    ☐ Load config from .env
+
+Misc:
+    ☐ Add detailed healthcheck response
+
+Tests:
+    ☐ Add unit tests
+    ☐ Add integration tests
