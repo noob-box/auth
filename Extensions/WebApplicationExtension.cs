@@ -1,5 +1,6 @@
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
-using NBOX.Auth.Authorization;
+using NBOX.Auth.Models;
 
 namespace NBOX.Auth.Extensions;
 
@@ -15,7 +16,25 @@ public static class WebApplicationExtension
         app.UseAuthorization();
 
         app.MapControllers();
-        app.MapHealthChecks("/health");
+        //app.MapHealthChecks("/health");
+        app.UseHealthChecks("/health", new HealthCheckOptions
+        {
+            ResponseWriter = async (context, report) =>
+            {
+                context.Response.ContentType = "application/json";
+                var response = new HealthCheckReponse
+                {
+                    Status = report.Status,
+                    Components = report.Entries.Select(x => new IndividualHealthCheckResponse
+                    {
+                        Component = x.Key,
+                        Status = x.Value.Status
+                    }),
+                    Duration = report.TotalDuration
+                };
+                await context.Response.WriteAsJsonAsync(response);
+            }
+        });
 
         app.Run();
     }

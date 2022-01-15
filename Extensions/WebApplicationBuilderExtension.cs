@@ -31,7 +31,7 @@ public static class WebApplicationBuilderExtension
         services.AddSwaggerGen();
 
         services.AddHealthChecks()
-            .AddDbContextCheck<AppDbContext>("DB");
+            .AddDbContextCheck<AppDbContext>("Database");
 
         var auth = services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
         auth.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
