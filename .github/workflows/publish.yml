@@ -47,7 +47,7 @@ jobs:
               env:
                   RID: ${{ matrix.targets }}
                   VERSION: ${{ needs.extractversion.outputs.version }}
-              run: dotnet publish -c Release -r $RID -p:Version=$VERSION
+              run: dotnet publish -c Release -r $RID -p:Version=$VERSION --no-self-contained
             - name: Package assets
               env:
                   RID: ${{ matrix.targets }}
