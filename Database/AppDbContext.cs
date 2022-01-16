@@ -9,10 +9,11 @@ namespace NBOX.Auth.Database;
 public class AppDbContext : DbContext
 {
     private AppSettings _appSettings;
-    public DbSet<User> Users { get; set; }
+    public DbSet<User> Users => Set<User>();
 
     public AppDbContext(DbContextOptions options, IOptions<AppSettings> appSettings) : base(options)
     {
+        if (appSettings is null) throw new ArgumentNullException(nameof(appSettings));
         _appSettings = appSettings.Value;
     }
 
@@ -23,6 +24,8 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        if (modelBuilder is null) throw new ArgumentNullException(nameof(modelBuilder));
+
         var entity = modelBuilder.Entity<User>();
         entity.HasKey(nameof(User.Id), nameof(User.Email));
 

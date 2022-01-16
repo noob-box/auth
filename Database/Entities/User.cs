@@ -49,8 +49,6 @@ public enum UserRole
 [Index(nameof(Email), IsUnique = true)]
 public class User : BaseEntity
 {
-    private static DateTime now = DateTime.Now;
-
     [Required]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; init; }

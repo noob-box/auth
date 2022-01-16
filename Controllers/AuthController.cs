@@ -25,9 +25,10 @@ public class AuthController : ControllerBase
     [HttpPost("Login")]
     public ActionResult<LoginResponse> PostLogin([FromBody] LoginRequest request)
     {
-        _logger.LogInformation("email: {0}\tpassword: {1}", request.Email, request.Password);
+        if (request is null) throw new ArgumentNullException(nameof(request));
+
         var user = _userService.GetUserByEmail(request.Email);
-        if (user == null) return NotFound();
+        if (user is null) return NotFound();
 
         var validPassword = _userService.validatePassword(user, request.Password);
         if (!validPassword) return Unauthorized();
@@ -45,6 +46,8 @@ public class AuthController : ControllerBase
     [HttpPost("Register")]
     public ActionResult<User> PostRegister([FromBody] RegisterRequest request)
     {
+        if (request is null) throw new ArgumentNullException(nameof(request));
+
         var user = _userService.GetUserByEmail(request.Email);
         if (user != null) return Conflict();
 

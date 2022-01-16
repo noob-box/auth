@@ -69,6 +69,8 @@ public class UserService : IUserService
 
     public bool validatePassword(User user, string plainPassword)
     {
+        if (user is null) throw new ArgumentNullException(nameof(user));
+
         return _passwordService.Verify(plainPassword, user.HashedPassword);
     }
 }

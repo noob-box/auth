@@ -7,5 +7,5 @@ public record IndividualHealthCheckResponse
 {
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public HealthStatus Status { get; set; }
-    public string Component { get; set; }
+    public string Component { get; set; } = "";
 }

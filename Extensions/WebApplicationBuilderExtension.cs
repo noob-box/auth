@@ -14,6 +14,8 @@ public static class WebApplicationBuilderExtension
 {
     public static void AddServices(this WebApplicationBuilder builder)
     {
+        if (builder is null) throw new ArgumentNullException(nameof(builder));
+
         var services = builder.Services;
         var config = builder.Configuration;
 

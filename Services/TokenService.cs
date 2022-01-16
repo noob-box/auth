@@ -22,11 +22,14 @@ public class TokenService : ITokenService
 
     public TokenService(IOptions<AppSettings> appSettings)
     {
+        if (appSettings is null) throw new ArgumentNullException(nameof(appSettings));
         _appSettings = appSettings.Value;
     }
 
     public JwtSecurityToken GenerateJwtToken(User user)
     {
+        if (user is null) throw new ArgumentNullException(nameof(user));
+
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.JwtSecret));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 

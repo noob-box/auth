@@ -1,8 +1,16 @@
 using NBOX.Auth.Extensions;
 
-var builder = WebApplication.CreateBuilder(args);
-builder.AddServices();
+namespace NBOX.Auth;
 
-var app = builder.Build();
-app.MigrateDatabases();
-app.ConfigureAndRun();
+class Program
+{
+    static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+        builder.AddServices();
+
+        var app = builder.Build();
+        app.MigrateDatabases();
+        app.ConfigureAndRun();
+    }
+}

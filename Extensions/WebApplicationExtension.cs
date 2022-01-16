@@ -9,6 +9,8 @@ public static class WebApplicationExtension
 
     public static void ConfigureAndRun(this WebApplication app)
     {
+        if (app is null) throw new ArgumentNullException(nameof(app));
+
         app.UseSwagger();
         app.UseSwaggerUI();
 
@@ -32,7 +34,7 @@ public static class WebApplicationExtension
                     }),
                     Duration = report.TotalDuration
                 };
-                await context.Response.WriteAsJsonAsync(response);
+                await context.Response.WriteAsJsonAsync(response).ConfigureAwait(false);
             }
         });
 
@@ -41,6 +43,8 @@ public static class WebApplicationExtension
 
     public static void MigrateDatabases(this WebApplication app)
     {
+        if (app is null) throw new ArgumentNullException(nameof(app));
+
         using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
         {
             var contexts = serviceScope.ServiceProvider.GetServices<DbContext>();
