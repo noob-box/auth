@@ -1,24 +1,26 @@
-FROM node:16 as builder
-
-ENV NODE_ENV build
-
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
+EXPOSE 5000
 
-COPY . /app
+ENV ASPNETCORE_URLS=http://+:5000
 
-RUN npm ci && npm run build && npm prune --production
+# Creates a non-root user with an explicit UID and adds permission to access the /app folder
+# For more info, please refer to https://aka.ms/vscode-docker-dotnet-configure-containers
+RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
+USER appuser
 
-# ---
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["NBOX.Auth.csproj", "./"]
+RUN dotnet restore "NBOX.Auth.csproj"
+COPY . .
+WORKDIR "/src/."
+RUN dotnet build "NBOX.Auth.csproj" -c Release -o /app/build
 
-FROM node:16
+FROM build AS publish
+RUN dotnet publish "NBOX.Auth.csproj" -c Release -o /app/publish
 
-ENV NODE_ENV production
-
-USER node
+FROM base AS final
 WORKDIR /app
-
-COPY --from=builder /app/package*.json /app/
-COPY --from=builder /app/node_modules/ /app/node_modules/
-COPY --from=builder /app/dist/ /app/dist/
-
-CMD ["node", "dist/main.js"]
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "NBOX.Auth.dll"]

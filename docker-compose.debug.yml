@@ -1,0 +1,30 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP .NET Core service.
+
+version: "3.4"
+
+services:
+    app:
+        image: nboxauth
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+        ports:
+            - 5000:5000
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+        volumes:
+            - ~/.vsdbg:/remote_debugger:rw
+        environment:
+            APPSETTINGS__DBCONNECTIONSTRING: Server=db;Port=5432;Database=postgres;User Id=postgres;Password=postgres;"
+            APPSETTINGS__JWTSECRET: ImSuperSecret123ImSuperSecret123"
+            APPSETTINGS__JWTISSUER: http://localhost.de"
+            APPSETTINGS__JWTAUDIENCE: http://localhost.de"
+            APPSETTINGS__ACCESSTOKENEXPIRY: 300
+            APPSETTINGS__REFRESHTOKENEXPIRY: 86400
+        depends_on:
+          - db
+
+    db:
+        image: postgres
+        environment:
+            POSTGRES_PASSWORD: postgres

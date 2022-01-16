@@ -1,0 +1,40 @@
+# Login
+POST http://localhost:5076/auth/login
+content-type: application/json
+
+{
+    "email": "fizzbuzz1",
+    "password": "WhoAreYou?"
+}
+
+###
+
+# Register
+POST http://localhost:5076/auth/register
+content-type: application/json
+
+{
+    "email": "fizzbuzz1",
+    "password": "WhoAreYou?",
+    "name": "Fizz Buzz"
+}
+
+###
+
+# Get current user
+PATCH http://localhost:5076/user
+content-type: application/json
+
+{
+    "name": "Foo Bar"
+}
+
+###
+
+# Patch current user
+PATCH http://localhost:5076/user
+content-type: application/json
+
+{
+    "name": "Foo Bar"
+}
