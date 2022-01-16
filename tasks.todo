@@ -1,9 +1,6 @@
 Authentication:
     ☐ Refresh token flow
 
-Configuration:
-    ☐ Load config from .env
-
 Misc:
     ✔ Add detailed healthcheck response @started(22-01-15 15:33) @done(22-01-15 15:54) @lasted(21m48s)
 
